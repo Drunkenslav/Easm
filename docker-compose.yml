@@ -1,0 +1,33 @@
+# Default Docker Compose (Tier A - Open Source)
+# For quick start and development
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easm-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_TIER=A
+      - APP_NAME=EASM Platform
+      - DEBUG=true
+      - SECRET_KEY=dev-secret-key
+      - JWT_SECRET_KEY=dev-jwt-secret-key
+      - DATABASE_URL=sqlite:////data/easm.db
+      - NUCLEI_PATH=/usr/local/bin/nuclei
+      - NUCLEI_TEMPLATES_PATH=/data/nuclei-templates
+      - LOG_LEVEL=INFO
+    volumes:
+      - easm-data:/data
+      - nuclei-templates:/data/nuclei-templates
+      # Mount source code for development
+      - ./backend/app:/app/app:ro
+    restart: unless-stopped
+
+volumes:
+  easm-data:
+  nuclei-templates:

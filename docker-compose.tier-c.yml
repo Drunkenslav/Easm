@@ -1,0 +1,168 @@
+# Docker Compose for Tier C (Cloud SaaS / Enterprise Edition)
+# Full multi-tenant setup with scaling capabilities
+# For organizations requiring scale and advanced features
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: easm-postgres-tier-c
+    environment:
+      - POSTGRES_DB=easm
+      - POSTGRES_USER=easm
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change-this-password}
+    volumes:
+      - postgres-data-tier-c:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U easm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for Celery and caching)
+  redis:
+    image: redis:7-alpine
+    container_name: easm-redis-tier-c
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data-tier-c:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend (can be scaled)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_TIER=C
+      - APP_NAME=EASM Platform - Enterprise Edition
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-this-jwt-secret-key}
+      - DATABASE_URL=postgresql+asyncpg://easm:${POSTGRES_PASSWORD:-change-this-password}@postgres:5432/easm
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - MULTI_TENANT=true
+      - NUCLEI_PATH=/usr/local/bin/nuclei
+      - NUCLEI_TEMPLATES_PATH=/data/nuclei-templates
+      - LOG_LEVEL=INFO
+    volumes:
+      - easm-data-tier-c:/data
+      - nuclei-templates:/data/nuclei-templates
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 2  # Can scale horizontally
+
+  # Celery Worker (can be scaled)
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - APP_TIER=C
+      - DATABASE_URL=postgresql+asyncpg://easm:${POSTGRES_PASSWORD:-change-this-password}@postgres:5432/easm
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - MULTI_TENANT=true
+      - NUCLEI_PATH=/usr/local/bin/nuclei
+      - NUCLEI_TEMPLATES_PATH=/data/nuclei-templates
+    volumes:
+      - easm-data-tier-c:/data
+      - nuclei-templates:/data/nuclei-templates
+    command: celery -A app.workers.celery_app worker --loglevel=info --concurrency=4
+    restart: unless-stopped
+    deploy:
+      replicas: 3  # Multiple workers for distributed scanning
+
+  # Celery Beat (for scheduled scans)
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easm-celery-beat-tier-c
+    depends_on:
+      - redis
+    environment:
+      - APP_TIER=C
+      - DATABASE_URL=postgresql+asyncpg://easm:${POSTGRES_PASSWORD:-change-this-password}@postgres:5432/easm
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - MULTI_TENANT=true
+    command: celery -A app.workers.celery_app beat --loglevel=info
+    restart: unless-stopped
+
+  # Flower (Celery monitoring)
+  flower:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easm-flower-tier-c
+    depends_on:
+      - redis
+    ports:
+      - "5555:5555"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    command: celery -A app.workers.celery_app flower --port=5555
+    restart: unless-stopped
+
+  # Nginx (load balancer and reverse proxy)
+  nginx:
+    image: nginx:alpine
+    container_name: easm-nginx-tier-c
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+
+volumes:
+  postgres-data-tier-c:
+    name: easm-postgres-data-tier-c
+  redis-data-tier-c:
+    name: easm-redis-data-tier-c
+  easm-data-tier-c:
+    name: easm-data-tier-c
+  nuclei-templates:
+    name: easm-nuclei-templates
+
+networks:
+  default:
+    name: easm-network-tier-c
