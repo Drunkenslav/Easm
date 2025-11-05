@@ -71,4 +71,4 @@ nuclei-templates/
 # Application data
 data/
 uploads/
-scans/
+/scans/
