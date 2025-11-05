@@ -1,5 +1,5 @@
 # Docker Compose for Tier A (Open Source)
-# Single container with SQLite database
+# Complete stack with frontend and backend
 # Minimal setup for individual users and small teams
 
 version: '3.8'
@@ -10,8 +10,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: easm-backend-tier-a
-    ports:
-      - "8000:8000"
     environment:
       - APP_TIER=A
       - APP_NAME=EASM Platform - Open Source
@@ -23,9 +21,7 @@ services:
       - NUCLEI_TEMPLATES_PATH=/data/nuclei-templates
       - LOG_LEVEL=INFO
     volumes:
-      # Persistent data
       - easm-data-tier-a:/data
-      # Nuclei templates (persistent across updates)
       - nuclei-templates:/data/nuclei-templates
     restart: unless-stopped
     healthcheck:
@@ -34,6 +30,36 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: easm-frontend-tier-a
+    environment:
+      - ORIGIN=http://localhost
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  nginx:
+    image: nginx:alpine
+    container_name: easm-nginx-tier-a
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx-tier-a.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
 
 volumes:
   easm-data-tier-a:

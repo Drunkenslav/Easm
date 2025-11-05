@@ -119,6 +119,38 @@ services:
     command: celery -A app.workers.celery_app beat --loglevel=info
     restart: unless-stopped
 
+  # SvelteKit Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: easm-frontend-tier-b
+    environment:
+      - ORIGIN=http://localhost
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Nginx (reverse proxy)
+  nginx:
+    image: nginx:alpine
+    container_name: easm-nginx-tier-b
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx-tier-b.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+
 volumes:
   postgres-data-tier-b:
     name: easm-postgres-data-tier-b

@@ -140,17 +140,39 @@ services:
     command: celery -A app.workers.celery_app flower --port=5555
     restart: unless-stopped
 
+  # SvelteKit Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: easm-frontend-tier-c
+    environment:
+      - ORIGIN=http://localhost
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 2  # Can scale horizontally with backend
+
   # Nginx (load balancer and reverse proxy)
   nginx:
     image: nginx:alpine
     container_name: easm-nginx-tier-c
     depends_on:
       - backend
+      - frontend
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx-tier-c.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
 
 volumes:
