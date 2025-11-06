@@ -167,7 +167,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 ```bash
 # Deploy Tier A
-docker-compose -f docker-compose.tier-a.yml up -d
+docker compose -f docker-compose.tier-a.yml up -d
 
 # Access
 http://localhost         # Frontend
@@ -255,13 +255,13 @@ export SECRET_KEY=<random-secret-key>
 export JWT_SECRET_KEY=<random-jwt-secret>
 
 # Deploy Tier B
-docker-compose -f docker-compose.tier-b.yml up -d
+docker compose -f docker-compose.tier-b.yml up -d
 
 # Check services
-docker-compose -f docker-compose.tier-b.yml ps
+docker compose -f docker-compose.tier-b.yml ps
 
 # View logs
-docker-compose -f docker-compose.tier-b.yml logs -f celery-worker
+docker compose -f docker-compose.tier-b.yml logs -f celery-worker
 ```
 
 ### Environment Variables
@@ -359,10 +359,10 @@ export SECRET_KEY=<random-secret-key>
 export JWT_SECRET_KEY=<random-jwt-secret>
 
 # Deploy Tier C
-docker-compose -f docker-compose.tier-c.yml up -d --scale backend=2 --scale frontend=2 --scale celery-worker=3
+docker compose -f docker-compose.tier-c.yml up -d --scale backend=2 --scale frontend=2 --scale celery-worker=3
 
 # Check services
-docker-compose -f docker-compose.tier-c.yml ps
+docker compose -f docker-compose.tier-c.yml ps
 
 # Access Flower monitoring
 http://localhost:5555
@@ -552,7 +552,7 @@ All services automatically restart on failure (except manual stops).
 ```bash
 # Docker and Docker Compose
 docker --version  # >= 20.10
-docker-compose --version  # >= 1.29
+docker compose version  # >= 1.29
 
 # Generate secrets
 export SECRET_KEY=$(openssl rand -hex 32)
@@ -568,13 +568,13 @@ git clone <repository>
 cd Easm
 
 # Deploy
-docker-compose -f docker-compose.tier-a.yml up -d
+docker compose -f docker-compose.tier-a.yml up -d
 
 # Wait for services
-docker-compose -f docker-compose.tier-a.yml ps
+docker compose -f docker-compose.tier-a.yml ps
 
 # Check logs
-docker-compose -f docker-compose.tier-a.yml logs -f
+docker compose -f docker-compose.tier-a.yml logs -f
 
 # Access application
 open http://localhost
@@ -591,17 +591,17 @@ JWT_SECRET_KEY=${JWT_SECRET_KEY}
 EOF
 
 # Deploy
-docker-compose -f docker-compose.tier-b.yml up -d
+docker compose -f docker-compose.tier-b.yml up -d
 
 # Initialize database
-docker-compose -f docker-compose.tier-b.yml exec backend \
+docker compose -f docker-compose.tier-b.yml exec backend \
   python -m app.db.init_db
 
 # Create default user
 curl -X GET http://localhost/api/v1/auth/init
 
 # Monitor Celery workers
-docker-compose -f docker-compose.tier-b.yml logs -f celery-worker
+docker compose -f docker-compose.tier-b.yml logs -f celery-worker
 ```
 
 ### Enterprise Deployment (Tier C)
@@ -615,10 +615,10 @@ JWT_SECRET_KEY=${JWT_SECRET_KEY}
 EOF
 
 # Deploy with scaling
-docker-compose -f docker-compose.tier-c.yml up -d
+docker compose -f docker-compose.tier-c.yml up -d
 
 # Check all replicas
-docker-compose -f docker-compose.tier-c.yml ps
+docker compose -f docker-compose.tier-c.yml ps
 
 # Access Flower monitoring
 open http://localhost:5555
@@ -635,7 +635,7 @@ curl http://localhost/health
 
 **Tier A (SQLite)**:
 ```bash
-docker-compose -f docker-compose.tier-a.yml exec backend \
+docker compose -f docker-compose.tier-a.yml exec backend \
   sqlite3 /data/easm.db ".backup '/data/backup.db'"
 
 docker cp easm-backend-tier-a:/data/backup.db ./backup.db
@@ -643,7 +643,7 @@ docker cp easm-backend-tier-a:/data/backup.db ./backup.db
 
 **Tier B/C (PostgreSQL)**:
 ```bash
-docker-compose -f docker-compose.tier-b.yml exec postgres \
+docker compose -f docker-compose.tier-b.yml exec postgres \
   pg_dump -U easm easm > backup.sql
 
 # Or use volume backup
@@ -654,44 +654,44 @@ docker run --rm -v easm-postgres-data-tier-b:/data -v $(pwd):/backup \
 ### Update Nuclei Templates
 
 ```bash
-docker-compose -f docker-compose.tier-a.yml exec backend \
+docker compose -f docker-compose.tier-a.yml exec backend \
   nuclei -update-templates
 
 # Restart to use new templates
-docker-compose -f docker-compose.tier-a.yml restart backend
+docker compose -f docker-compose.tier-a.yml restart backend
 ```
 
 ### Scale Services (Tier C)
 
 ```bash
 # Scale backend to 4 replicas
-docker-compose -f docker-compose.tier-c.yml up -d --scale backend=4
+docker compose -f docker-compose.tier-c.yml up -d --scale backend=4
 
 # Scale celery workers to 5
-docker-compose -f docker-compose.tier-c.yml up -d --scale celery-worker=5
+docker compose -f docker-compose.tier-c.yml up -d --scale celery-worker=5
 ```
 
 ### View Logs
 
 ```bash
 # All services
-docker-compose -f docker-compose.tier-b.yml logs -f
+docker compose -f docker-compose.tier-b.yml logs -f
 
 # Specific service
-docker-compose -f docker-compose.tier-b.yml logs -f backend
+docker compose -f docker-compose.tier-b.yml logs -f backend
 
 # Last 100 lines
-docker-compose -f docker-compose.tier-b.yml logs --tail=100 celery-worker
+docker compose -f docker-compose.tier-b.yml logs --tail=100 celery-worker
 ```
 
 ### Stop and Remove
 
 ```bash
 # Stop services
-docker-compose -f docker-compose.tier-a.yml down
+docker compose -f docker-compose.tier-a.yml down
 
 # Stop and remove volumes (WARNING: data loss)
-docker-compose -f docker-compose.tier-a.yml down -v
+docker compose -f docker-compose.tier-a.yml down -v
 ```
 
 ---
@@ -702,7 +702,7 @@ docker-compose -f docker-compose.tier-a.yml down -v
 
 ```bash
 # Tier A
-docker-compose -f docker-compose.tier-a.yml ps
+docker compose -f docker-compose.tier-a.yml ps
 
 # Check backend health
 curl http://localhost/health
@@ -740,11 +740,11 @@ curl -X POST http://localhost/api/v1/assets/ \
 
 ```bash
 # Check worker status
-docker-compose -f docker-compose.tier-b.yml exec celery-worker \
+docker compose -f docker-compose.tier-b.yml exec celery-worker \
   celery -A app.workers.celery_app status
 
 # Inspect tasks
-docker-compose -f docker-compose.tier-b.yml exec celery-worker \
+docker compose -f docker-compose.tier-b.yml exec celery-worker \
   celery -A app.workers.celery_app inspect active
 
 # Access Flower (Tier C only)
@@ -759,50 +759,50 @@ open http://localhost:5555
 
 ```bash
 # Check logs
-docker-compose -f docker-compose.tier-a.yml logs backend
+docker compose -f docker-compose.tier-a.yml logs backend
 
 # Common issues:
 # 1. Database migration needed
-docker-compose -f docker-compose.tier-a.yml exec backend \
+docker compose -f docker-compose.tier-a.yml exec backend \
   alembic upgrade head
 
 # 2. Permission issues
-docker-compose -f docker-compose.tier-a.yml exec backend ls -la /data
+docker compose -f docker-compose.tier-a.yml exec backend ls -la /data
 ```
 
 ### Frontend Not Building
 
 ```bash
 # Check logs
-docker-compose -f docker-compose.tier-a.yml logs frontend
+docker compose -f docker-compose.tier-a.yml logs frontend
 
 # Rebuild
-docker-compose -f docker-compose.tier-a.yml build --no-cache frontend
-docker-compose -f docker-compose.tier-a.yml up -d frontend
+docker compose -f docker-compose.tier-a.yml build --no-cache frontend
+docker compose -f docker-compose.tier-a.yml up -d frontend
 ```
 
 ### Celery Workers Not Processing
 
 ```bash
 # Check worker logs
-docker-compose -f docker-compose.tier-b.yml logs celery-worker
+docker compose -f docker-compose.tier-b.yml logs celery-worker
 
 # Check Redis connection
-docker-compose -f docker-compose.tier-b.yml exec redis redis-cli ping
+docker compose -f docker-compose.tier-b.yml exec redis redis-cli ping
 
 # Restart workers
-docker-compose -f docker-compose.tier-b.yml restart celery-worker
+docker compose -f docker-compose.tier-b.yml restart celery-worker
 ```
 
 ### Database Connection Issues
 
 ```bash
 # Tier B/C: Check PostgreSQL
-docker-compose -f docker-compose.tier-b.yml exec postgres \
+docker compose -f docker-compose.tier-b.yml exec postgres \
   psql -U easm -d easm -c "SELECT version();"
 
 # Check DATABASE_URL
-docker-compose -f docker-compose.tier-b.yml exec backend env | grep DATABASE_URL
+docker compose -f docker-compose.tier-b.yml exec backend env | grep DATABASE_URL
 ```
 
 ---

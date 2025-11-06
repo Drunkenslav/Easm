@@ -31,7 +31,7 @@ fi
 source .env
 
 echo "📦 Building images..."
-docker-compose -f docker-compose.tier-c.yml build
+docker compose -f docker-compose.tier-c.yml build
 
 echo ""
 echo "🚀 Starting services with scaling..."
@@ -41,9 +41,9 @@ echo "   - Celery Workers: 3 replicas (12 concurrent scans)"
 echo ""
 
 # Deploy with replicas
-# Note: docker-compose doesn't support deploy.replicas in standalone mode
+# Note: docker compose doesn't support deploy.replicas in standalone mode
 # Use --scale flag instead
-docker-compose -f docker-compose.tier-c.yml up -d \
+docker compose -f docker-compose.tier-c.yml up -d \
     --scale backend=2 \
     --scale frontend=2 \
     --scale celery-worker=3
@@ -54,7 +54,7 @@ sleep 10
 
 echo ""
 echo "📊 Service Status:"
-docker-compose -f docker-compose.tier-c.yml ps
+docker compose -f docker-compose.tier-c.yml ps
 
 echo ""
 echo "✅ Deployment complete!"
@@ -65,8 +65,8 @@ echo "   - API Docs: http://localhost/docs"
 echo "   - Flower (Celery monitoring): http://localhost:5555"
 echo ""
 echo "📝 Useful commands:"
-echo "   - View logs: docker-compose -f docker-compose.tier-c.yml logs -f"
-echo "   - Scale backend: docker-compose -f docker-compose.tier-c.yml up -d --scale backend=4"
-echo "   - Scale workers: docker-compose -f docker-compose.tier-c.yml up -d --scale celery-worker=5"
-echo "   - Stop all: docker-compose -f docker-compose.tier-c.yml down"
+echo "   - View logs: docker compose -f docker-compose.tier-c.yml logs -f"
+echo "   - Scale backend: docker compose -f docker-compose.tier-c.yml up -d --scale backend=4"
+echo "   - Scale workers: docker compose -f docker-compose.tier-c.yml up -d --scale celery-worker=5"
+echo "   - Stop all: docker compose -f docker-compose.tier-c.yml down"
 echo ""
