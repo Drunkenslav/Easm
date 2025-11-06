@@ -2,14 +2,15 @@
 # Startup script for backend container
 # Initializes database with admin user and mock data, then starts uvicorn
 
-set -e
-
 echo "🚀 Starting EASM Backend..."
 echo ""
 
 # Initialize database with admin user and mock data
 echo "📊 Initializing database..."
-python init_db.py
+python init_db.py || {
+    echo "⚠️  Database initialization had issues, but continuing..."
+    echo "   You may need to run /api/v1/auth/init manually"
+}
 
 echo ""
 echo "🌐 Starting API server..."
