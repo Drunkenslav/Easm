@@ -7,6 +7,7 @@ export default defineConfig({
 		extensions: ['.ts', '.js', '.svelte', '.json']
 	},
 	server: {
+		host: '0.0.0.0',
 		port: 5173,
 		proxy: {
 			'/api': {

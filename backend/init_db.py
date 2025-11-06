@@ -2,6 +2,11 @@
 Initialize database with admin user and mock data
 Run this automatically on container startup
 """
+# Load .env FIRST before importing any app modules
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
 import asyncio
 import sys
 from datetime import datetime, timedelta
@@ -13,9 +18,15 @@ from app.models.user import UserRole
 from app.models.asset import AssetType
 from app.models.vulnerability import VulnerabilitySeverity, VulnerabilityState
 from app.models.scan import ScanStatus
-import os
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:////data/easm.db")
+# Get DATABASE_URL and convert to async format
+_database_url = os.getenv("DATABASE_URL", "sqlite:///./data/easm.db")
+if _database_url.startswith("sqlite://"):
+    DATABASE_URL = _database_url.replace("sqlite://", "sqlite+aiosqlite://")
+elif "postgresql" in _database_url and "asyncpg" not in _database_url:
+    DATABASE_URL = _database_url.replace("postgresql://", "postgresql+asyncpg://")
+else:
+    DATABASE_URL = _database_url
 
 async def init_database():
     """Initialize database with admin user and mock data"""
@@ -48,8 +59,8 @@ async def init_database():
                 role=UserRole.ADMIN.value,
                 is_active=True,
                 is_superuser=True,
-                created_at=datetime.utcnow().isoformat(),
-                updated_at=datetime.utcnow().isoformat()
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow()
             )
             session.add(admin_user)
             await session.commit()
@@ -69,39 +80,37 @@ async def init_database():
         print("📊 Creating mock data...")
 
         # Create scan templates
+        now = datetime.utcnow()
         templates = [
             ScanTemplate(
                 name="Quick Scan",
-                description="Fast vulnerability scan",
-                scan_type="nuclei",
-                config={"severity": ["critical", "high"], "tags": ["cve"]},
-                is_default=True,
-                created_by_user_id=admin_user.id,
-                created_at=datetime.utcnow().isoformat(),
-                updated_at=datetime.utcnow().isoformat()
+                description="Fast vulnerability scan with critical/high severity only",
+                nuclei_severity=["critical", "high"],
+                nuclei_tags=["cve"],
+                created_at=now,
+                updated_at=now
             ),
             ScanTemplate(
                 name="Full Scan",
-                description="Comprehensive vulnerability scan",
-                scan_type="nuclei",
-                config={"severity": ["critical", "high", "medium", "low"]},
-                is_default=False,
-                created_by_user_id=admin_user.id,
-                created_at=datetime.utcnow().isoformat(),
-                updated_at=datetime.utcnow().isoformat()
+                description="Comprehensive vulnerability scan with all severities",
+                nuclei_severity=["critical", "high", "medium", "low"],
+                nuclei_tags=[],
+                created_at=now,
+                updated_at=now
             )
         ]
         for template in templates:
             session.add(template)
         await session.commit()
+        print(f"✅ Created {len(templates)} scan templates")
 
         # Create assets
         assets_data = [
             {"type": AssetType.DOMAIN, "value": "example.com", "name": "Main Website", "criticality": "high"},
             {"type": AssetType.DOMAIN, "value": "api.example.com", "name": "API Server", "criticality": "critical"},
             {"type": AssetType.DOMAIN, "value": "staging.example.com", "name": "Staging Environment", "criticality": "medium"},
-            {"type": AssetType.IP_ADDRESS, "value": "192.168.1.100", "name": "Internal Server", "criticality": "high"},
-            {"type": AssetType.IP_ADDRESS, "value": "10.0.0.50", "name": "Database Server", "criticality": "critical"},
+            {"type": AssetType.IP, "value": "192.168.1.100", "name": "Internal Server", "criticality": "high"},
+            {"type": AssetType.IP, "value": "10.0.0.50", "name": "Database Server", "criticality": "critical"},
             {"type": AssetType.URL, "value": "https://example.com/admin", "name": "Admin Panel", "criticality": "critical"},
             {"type": AssetType.DOMAIN, "value": "dev.example.com", "name": "Development Server", "criticality": "low"},
         ]
@@ -112,15 +121,15 @@ async def init_database():
                 type=asset_data["type"].value,
                 value=asset_data["value"],
                 name=asset_data["name"],
-                description=f"Mock asset for testing",
+                notes=f"Mock asset for testing",
                 criticality=asset_data["criticality"],
                 tags=["mock", "test"],
-                metadata={},
-                is_active=True,
-                discovered_at=datetime.utcnow().isoformat(),
-                created_by_user_id=admin_user.id,
-                created_at=datetime.utcnow().isoformat(),
-                updated_at=datetime.utcnow().isoformat()
+                custom_metadata={},
+                status="active",
+                scan_enabled=True,
+                discovered_at=now.isoformat(),
+                created_at=now,
+                updated_at=now
             )
             session.add(asset)
             assets.append(asset)
@@ -146,20 +155,21 @@ async def init_database():
 
         scans = []
         for scan_data in scans_data:
+            asset = assets[scan_data["asset_idx"]]
             scan = Scan(
-                asset_id=assets[scan_data["asset_idx"]].id,
+                name=f"Scan of {asset.name}",
+                asset_id=asset.id,
+                target=asset.value,
                 status=scan_data["status"].value,
-                scan_type="nuclei",
                 config={},
-                started_at=datetime.utcnow().isoformat() if scan_data["status"] != ScanStatus.PENDING else None,
-                completed_at=(datetime.utcnow() + timedelta(minutes=5)).isoformat() if scan_data["status"] == ScanStatus.COMPLETED else None,
+                started_at=now.isoformat() if scan_data["status"] != ScanStatus.PENDING else None,
+                completed_at=(now + timedelta(minutes=5)).isoformat() if scan_data["status"] == ScanStatus.COMPLETED else None,
                 duration_seconds=300 if scan_data["status"] == ScanStatus.COMPLETED else None,
                 vulnerabilities_found=scan_data["vulns"],
                 vulnerabilities_by_severity={"critical": scan_data["vulns"] // 3, "high": scan_data["vulns"] // 2} if scan_data["vulns"] > 0 else {},
                 error_message="Network timeout" if scan_data["status"] == ScanStatus.FAILED else None,
-                created_by_user_id=admin_user.id,
-                created_at=datetime.utcnow().isoformat(),
-                updated_at=datetime.utcnow().isoformat()
+                created_at=now,
+                updated_at=now
             )
             session.add(scan)
             scans.append(scan)
@@ -186,24 +196,30 @@ async def init_database():
             {"asset_idx": 5, "severity": VulnerabilitySeverity.CRITICAL, "state": VulnerabilityState.REMEDIATION, "title": "Insecure Deserialization"},
         ]
 
-        for vuln_data in vulnerabilities_data:
+        for idx, vuln_data in enumerate(vulnerabilities_data):
+            asset_idx = vuln_data["asset_idx"]
+            # Find a completed scan for this asset
+            scan_for_asset = next((s for s in scans if s.asset_id == assets[asset_idx].id and s.status == "completed"), None)
+            if not scan_for_asset:
+                continue  # Skip if no completed scan
+
             vulnerability = Vulnerability(
-                asset_id=assets[vuln_data["asset_idx"]].id,
-                title=vuln_data["title"],
+                asset_id=assets[asset_idx].id,
+                scan_id=scan_for_asset.id,
+                template_id=f"mock-template-{idx}",
+                template_name=f"mock/{vuln_data['title'].lower().replace(' ', '-')}",
+                name=vuln_data["title"],
                 description=f"Mock vulnerability: {vuln_data['title']}",
                 severity=vuln_data["severity"].value,
                 state=vuln_data["state"].value,
-                cvss_score=9.8 if vuln_data["severity"] == VulnerabilitySeverity.CRITICAL else 7.5,
-                cve_id=f"CVE-2024-{1000 + vulnerabilities_data.index(vuln_data)}",
-                cwe_id=f"CWE-{79 + vulnerabilities_data.index(vuln_data)}",
-                found_at=datetime.utcnow().isoformat(),
-                source="nuclei",
-                evidence={"url": f"https://{assets[vuln_data['asset_idx']].value}/vulnerable"},
-                remediation="Update to latest version and apply security patches",
-                references=["https://nvd.nist.gov/vuln/detail/CVE-2024-1000"],
+                matched_at=f"https://{assets[asset_idx].value}/vulnerable",
+                cvss_score=str(9.8 if vuln_data["severity"] == VulnerabilitySeverity.CRITICAL else 7.5),
+                cve_ids=[f"CVE-2024-{1000 + idx}"],
+                cwe_ids=[f"CWE-{79 + idx}"],
                 tags=["mock", "test"],
-                created_at=datetime.utcnow().isoformat(),
-                updated_at=datetime.utcnow().isoformat()
+                reference_urls=["https://nvd.nist.gov/vuln/detail/CVE-2024-1000"],
+                created_at=now,
+                updated_at=now
             )
             session.add(vulnerability)
 
