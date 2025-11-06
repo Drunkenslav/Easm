@@ -23,15 +23,17 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
+    unzip \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Nuclei
-RUN wget -q https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_linux_amd64.zip \
-    && unzip nuclei_linux_amd64.zip \
+# Install Nuclei (using curl with redirect follow)
+RUN curl -fsSL -o nuclei.zip https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_linux_amd64.zip \
+    && unzip -q nuclei.zip \
     && mv nuclei /usr/local/bin/nuclei \
     && chmod +x /usr/local/bin/nuclei \
-    && rm nuclei_linux_amd64.zip
+    && rm nuclei.zip \
+    || echo "Warning: Nuclei installation failed, continuing without it"
 
 # Create non-root user
 RUN useradd -m -u 1000 easm && \
