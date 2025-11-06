@@ -23,7 +23,14 @@ class ScanService:
 
     def __init__(self, db: AsyncSession):
         self.db = db
-        self.nuclei_scanner = get_nuclei_scanner()
+        self._nuclei_scanner = None  # Lazy-load to avoid requiring Nuclei for read operations
+
+    @property
+    def nuclei_scanner(self):
+        """Lazy-load Nuclei scanner only when needed"""
+        if self._nuclei_scanner is None:
+            self._nuclei_scanner = get_nuclei_scanner()
+        return self._nuclei_scanner
 
     async def create_scan(
         self,

@@ -4,6 +4,7 @@ Pydantic schemas for Scan and ScanTemplate models
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 from app.models.enums import ScanStatus
+from app.schemas.base import TimestampSchema
 
 
 class ScanTemplateBase(BaseModel):
@@ -41,15 +42,10 @@ class ScanTemplateUpdate(BaseModel):
     options: Optional[Dict[str, Any]] = None
 
 
-class ScanTemplateInDB(ScanTemplateBase):
+class ScanTemplateInDB(ScanTemplateBase, TimestampSchema):
     """Schema for scan template in database"""
     id: int
     tenant_id: Optional[str] = None
-    created_at: str
-    updated_at: str
-
-    class Config:
-        from_attributes = True
 
 
 class ScanTemplate(ScanTemplateInDB):
@@ -76,7 +72,7 @@ class ScanUpdate(BaseModel):
     status: Optional[ScanStatus] = None
 
 
-class ScanInDB(ScanBase):
+class ScanInDB(ScanBase, TimestampSchema):
     """Schema for scan in database"""
     id: int
     asset_id: int
@@ -91,11 +87,6 @@ class ScanInDB(ScanBase):
     celery_task_id: Optional[str] = None
     worker_hostname: Optional[str] = None
     created_by_user_id: Optional[int] = None
-    created_at: str
-    updated_at: str
-
-    class Config:
-        from_attributes = True
 
 
 class Scan(ScanInDB):
