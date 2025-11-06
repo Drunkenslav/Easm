@@ -4,6 +4,7 @@ Pydantic schemas for User model
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 from app.models.enums import UserRole
+from app.schemas.base import TimestampSchema
 
 
 class UserBase(BaseModel):
@@ -30,17 +31,12 @@ class UserUpdate(BaseModel):
     password: Optional[str] = Field(None, min_length=8)
 
 
-class UserInDB(UserBase):
+class UserInDB(UserBase, TimestampSchema):
     """Schema for user in database (with all fields)"""
     id: int
     is_superuser: bool
     tenant_id: Optional[str] = None
     last_login_at: Optional[str] = None
-    created_at: str
-    updated_at: str
-
-    class Config:
-        from_attributes = True
 
 
 class User(UserInDB):
