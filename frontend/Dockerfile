@@ -13,6 +13,17 @@ RUN npm install
 # Copy application code
 COPY . .
 
+# Debug and fix permissions
+RUN echo "=== Files after COPY ===" && \
+    ls -la src/ && \
+    ls -la src/lib/ && \
+    ls -la src/lib/stores/ && \
+    chmod -R 755 src/ && \
+    echo "=== After chmod ===" && \
+    ls -la src/lib/stores/ && \
+    cat src/lib/stores/auth.ts | head -5 && \
+    echo "=== End debug ==="
+
 # Generate SvelteKit files (required before build)
 RUN npx svelte-kit sync
 
