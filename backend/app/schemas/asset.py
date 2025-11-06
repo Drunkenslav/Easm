@@ -1,8 +1,9 @@
 """
 Pydantic schemas for Asset model
 """
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Optional, List, Dict, Any, Union
+from pydantic import BaseModel, Field, field_serializer, field_validator
 from app.models.enums import AssetType, AssetStatus
 from app.schemas.base import TimestampSchema
 
@@ -66,3 +67,13 @@ class AssetWithStats(Asset):
     vulnerability_count: int = 0
     vulnerability_count_by_severity: Dict[str, int] = {}
     last_vulnerability_found_at: Optional[str] = None
+
+    @field_validator('last_vulnerability_found_at', mode='before')
+    @classmethod
+    def validate_last_vuln_time(cls, v: Union[str, datetime, None]) -> Optional[str]:
+        """Convert datetime to ISO format string before validation"""
+        if v is None:
+            return None
+        if isinstance(v, datetime):
+            return v.isoformat()
+        return v
