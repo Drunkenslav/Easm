@@ -49,8 +49,8 @@ class Asset(Base, TimestampMixin, TenantMixin):
     vulnerabilities = relationship("Vulnerability", back_populates="asset", cascade="all, delete-orphan")
     scans = relationship("Scan", back_populates="asset", cascade="all, delete-orphan")
 
-    # Metadata
-    metadata = Column(JSON, default={})  # Additional flexible data
+    # Custom metadata (renamed from 'metadata' to avoid SQLAlchemy reserved name)
+    custom_metadata = Column(JSON, default={})  # Additional flexible data
 
     def __repr__(self):
         return f"<Asset {self.type}:{self.value}>"
