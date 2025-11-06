@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { api } from '$lib/api';
-	import { formatDate, formatRelativeTime, getSeverityClass } from '$lib/utils';
+	import { api } from '$lib/api.ts';
+	import { formatDate, formatRelativeTime, getSeverityClass } from '$lib/utils.ts';
 
 	let assetId: number;
 	let asset: any = null;

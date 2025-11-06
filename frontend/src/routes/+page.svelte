@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { authStore } from '$lib/stores/auth';
-	import { api } from '$lib/api';
+	import { authStore } from '$lib/stores/auth.ts';
+	import { api } from '$lib/api.ts';
 
 	let stats = {
 		assets: { count: 0, loading: true },
