@@ -4,6 +4,7 @@ Pydantic schemas for Asset model
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 from app.models.enums import AssetType, AssetStatus
+from app.schemas.base import TimestampSchema
 
 
 class AssetBase(BaseModel):
@@ -39,7 +40,7 @@ class AssetUpdate(BaseModel):
     technologies: Optional[List[str]] = None
 
 
-class AssetInDB(AssetBase):
+class AssetInDB(AssetBase, TimestampSchema):
     """Schema for asset in database"""
     id: int
     tenant_id: Optional[str] = None
@@ -52,12 +53,7 @@ class AssetInDB(AssetBase):
     last_seen_at: Optional[str] = None
     discovery_method: Optional[str] = None
     last_scanned_at: Optional[str] = None
-    metadata: Dict[str, Any] = {}
-    created_at: str
-    updated_at: str
-
-    class Config:
-        from_attributes = True
+    custom_metadata: Dict[str, Any] = {}
 
 
 class Asset(AssetInDB):
