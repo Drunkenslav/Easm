@@ -99,5 +99,6 @@ async def initialize_default_user(
     return {
         "message": "Default user initialized",
         "username": user.username,
-        "note": "Please change the default password"
+        "password": "admin123",
+        "note": "Please change the default password immediately!"
     }

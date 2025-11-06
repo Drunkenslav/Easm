@@ -228,7 +228,7 @@ class AuthService:
         user = await self.create_user(default_user, is_superuser=True)
 
         logger.warning(
-            "Default admin user created with username 'admin' and password 'admin'. "
+            "Default admin user created with username 'admin' and password 'admin123'. "
             "Please change the password immediately!"
         )
 
