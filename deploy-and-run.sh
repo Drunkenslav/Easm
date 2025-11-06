@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 echo "🚀 EASM Platform - Deploy and Run Script"
 echo "========================================"
@@ -14,30 +13,68 @@ FRONTEND_PORT=5173
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-# Get script directory
+# Get absolute script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$SCRIPT_DIR"
+echo "📁 Working in: $SCRIPT_DIR"
+echo ""
+
+# Check prerequisites
+echo -e "${BLUE}🔍 Checking prerequisites...${NC}"
+if ! command -v python3 &> /dev/null; then
+    echo -e "${RED}❌ Error: python3 not found${NC}"
+    echo "Please install Python 3.9 or higher"
+    exit 1
+fi
+if ! command -v node &> /dev/null; then
+    echo -e "${RED}❌ Error: node not found${NC}"
+    echo "Please install Node.js 18 or higher"
+    exit 1
+fi
+echo "✓ Python: $(python3 --version)"
+echo "✓ Node.js: $(node --version)"
+echo ""
 
 echo -e "${BLUE}📥 Step 1: Pulling latest code...${NC}"
-git fetch origin
-git checkout $BRANCH
-git pull origin $BRANCH
+cd "$SCRIPT_DIR"
+git fetch origin || echo "Warning: git fetch failed"
+git checkout $BRANCH || echo "Warning: git checkout failed"
+git pull origin $BRANCH || echo "Warning: git pull failed"
 echo -e "${GREEN}✅ Code updated${NC}"
 echo ""
 
 echo -e "${BLUE}🐍 Step 2: Setting up Python backend...${NC}"
-cd backend
+cd "$SCRIPT_DIR/backend"
+
+# Remove corrupted venv if exists
+if [ -d "venv" ] && [ ! -f "venv/bin/activate" ]; then
+    echo "⚠️  Removing corrupted venv..."
+    rm -rf venv
+fi
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "Creating Python virtual environment..."
     python3 -m venv venv
+    if [ ! -f "venv/bin/activate" ]; then
+        echo -e "${RED}❌ Error: Failed to create venv${NC}"
+        echo "Check if python3-venv is installed:"
+        echo "  sudo apt-get install python3-venv"
+        exit 1
+    fi
+    echo "✓ Virtual environment created"
 fi
 
 # Activate virtual environment and install dependencies
+echo "Activating virtual environment..."
 source venv/bin/activate
+if [ -z "$VIRTUAL_ENV" ]; then
+    echo -e "${RED}❌ Error: Failed to activate venv${NC}"
+    exit 1
+fi
+echo "✓ Virtual environment activated"
 echo "Installing Python dependencies..."
 pip install -q --upgrade pip
 pip install -q -r requirements.txt
@@ -77,22 +114,26 @@ echo ""
 echo -e "${BLUE}🎯 Step 4: Starting services...${NC}"
 echo ""
 
+# Create logs directory
+mkdir -p "$SCRIPT_DIR/logs"
+
 # Check if tmux is installed
 if ! command -v tmux &> /dev/null; then
-    echo -e "${YELLOW}⚠️  tmux not found. Installing services without tmux...${NC}"
+    echo -e "${YELLOW}⚠️  tmux not found. Running services in background...${NC}"
     echo ""
-    echo "Starting backend in background..."
+    echo "Starting backend..."
     cd "$SCRIPT_DIR/backend"
-    source venv/bin/activate
-    nohup uvicorn app.main:app --host 0.0.0.0 --port $BACKEND_PORT --reload > ../logs/backend.log 2>&1 &
-    BACKEND_PID=$!
-    echo "Backend PID: $BACKEND_PID"
+    # Activate venv in subshell and start backend
+    (source venv/bin/activate && nohup uvicorn app.main:app --host 0.0.0.0 --port $BACKEND_PORT --reload > "$SCRIPT_DIR/logs/backend.log" 2>&1 &)
+    sleep 1
+    BACKEND_PID=$(pgrep -f "uvicorn app.main:app")
+    echo "✓ Backend started (PID: $BACKEND_PID)"
 
-    echo "Starting frontend in background..."
+    echo "Starting frontend..."
     cd "$SCRIPT_DIR/frontend"
-    nohup npm run dev > ../logs/frontend.log 2>&1 &
+    nohup npm run dev > "$SCRIPT_DIR/logs/frontend.log" 2>&1 &
     FRONTEND_PID=$!
-    echo "Frontend PID: $FRONTEND_PID"
+    echo "✓ Frontend started (PID: $FRONTEND_PID)"
 
     echo ""
     echo -e "${GREEN}✅ Services started!${NC}"
