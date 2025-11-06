@@ -1,0 +1,166 @@
+# Docker Compose for Tier B (On-Premise / Business Edition)
+# Multi-container setup with PostgreSQL, Redis, and Celery workers
+# For medium-sized organizations
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: easm-postgres-tier-b
+    environment:
+      - POSTGRES_DB=easm
+      - POSTGRES_USER=easm
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change-this-password}
+    volumes:
+      - postgres-data-tier-b:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U easm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for Celery)
+  redis:
+    image: redis:7-alpine
+    container_name: easm-redis-tier-b
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data-tier-b:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easm-backend-tier-b
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_TIER=B
+      - APP_NAME=EASM Platform - Business Edition
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-this-jwt-secret-key}
+      - DATABASE_URL=postgresql+asyncpg://easm:${POSTGRES_PASSWORD:-change-this-password}@postgres:5432/easm
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - NUCLEI_PATH=/usr/local/bin/nuclei
+      - NUCLEI_TEMPLATES_PATH=/data/nuclei-templates
+      - LOG_LEVEL=INFO
+    volumes:
+      - easm-data-tier-b:/data
+      - nuclei-templates:/data/nuclei-templates
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Celery Worker
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easm-celery-worker-tier-b
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - APP_TIER=B
+      - DATABASE_URL=postgresql+asyncpg://easm:${POSTGRES_PASSWORD:-change-this-password}@postgres:5432/easm
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - NUCLEI_PATH=/usr/local/bin/nuclei
+      - NUCLEI_TEMPLATES_PATH=/data/nuclei-templates
+    volumes:
+      - easm-data-tier-b:/data
+      - nuclei-templates:/data/nuclei-templates
+    command: celery -A app.workers.celery_app worker --loglevel=info
+    restart: unless-stopped
+
+  # Celery Beat (for scheduled scans)
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easm-celery-beat-tier-b
+    depends_on:
+      - redis
+    environment:
+      - APP_TIER=B
+      - DATABASE_URL=postgresql+asyncpg://easm:${POSTGRES_PASSWORD:-change-this-password}@postgres:5432/easm
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    command: celery -A app.workers.celery_app beat --loglevel=info
+    restart: unless-stopped
+
+  # SvelteKit Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: easm-frontend-tier-b
+    environment:
+      - ORIGIN=http://localhost
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Nginx (reverse proxy)
+  nginx:
+    image: nginx:alpine
+    container_name: easm-nginx-tier-b
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx-tier-b.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+
+volumes:
+  postgres-data-tier-b:
+    name: easm-postgres-data-tier-b
+  redis-data-tier-b:
+    name: easm-redis-data-tier-b
+  easm-data-tier-b:
+    name: easm-data-tier-b
+  nuclei-templates:
+    name: easm-nuclei-templates
+
+networks:
+  default:
+    name: easm-network-tier-b

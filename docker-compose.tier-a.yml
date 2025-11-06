@@ -1,0 +1,72 @@
+# Docker Compose for Tier A (Open Source)
+# Complete stack with frontend and backend
+# Minimal setup for individual users and small teams
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easm-backend-tier-a
+    environment:
+      - APP_TIER=A
+      - APP_NAME=EASM Platform - Open Source
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-this-jwt-secret-key}
+      - DATABASE_URL=sqlite:////data/easm.db
+      - NUCLEI_PATH=/usr/local/bin/nuclei
+      - NUCLEI_TEMPLATES_PATH=/data/nuclei-templates
+      - LOG_LEVEL=INFO
+    volumes:
+      - easm-data-tier-a:/data
+      - nuclei-templates:/data/nuclei-templates
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: easm-frontend-tier-a
+    environment:
+      - ORIGIN=http://localhost
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  nginx:
+    image: nginx:alpine
+    container_name: easm-nginx-tier-a
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx-tier-a.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+
+volumes:
+  easm-data-tier-a:
+    name: easm-data-tier-a
+  nuclei-templates:
+    name: easm-nuclei-templates
+
+networks:
+  default:
+    name: easm-network-tier-a
