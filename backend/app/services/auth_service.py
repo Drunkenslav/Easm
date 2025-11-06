@@ -217,9 +217,9 @@ class AuthService:
         logger.info("Creating default admin user for Tier A")
 
         default_user = UserCreate(
-            email="admin@localhost",
+            email="admin@example.com",
             username="admin",
-            password="admin",  # Should be changed in production
+            password="admin123",  # Default password - should be changed in production
             full_name="Administrator",
             role=UserRole.ADMIN,
             is_active=True,
