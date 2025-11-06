@@ -13,6 +13,9 @@ RUN npm install
 # Copy application code
 COPY . .
 
+# Generate SvelteKit files (required before build)
+RUN npx svelte-kit sync
+
 # Build the application
 RUN npm run build
 
