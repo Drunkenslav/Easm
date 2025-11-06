@@ -13,6 +13,12 @@ RUN npm install
 # Copy application code
 COPY . .
 
+# Debug: List copied files to verify TypeScript files are present
+RUN echo "=== Verifying copied files ===" && \
+    ls -la src/lib/ && \
+    ls -la src/lib/stores/ && \
+    echo "=== End verification ==="
+
 # Generate SvelteKit files (required before build)
 RUN npx svelte-kit sync
 
