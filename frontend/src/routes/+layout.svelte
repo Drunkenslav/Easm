@@ -1,9 +1,9 @@
 <script lang="ts">
 	import '../app.css';
 	import { page } from '$app/stores';
-	import { authStore } from '$lib/stores/auth';
+	import { authStore } from '$lib/stores/auth.ts';
 	import { goto } from '$app/navigation';
-	import { api } from '$lib/api';
+	import { api } from '$lib/api.ts';
 
 	$: isLoginPage = $page.url.pathname === '/login';
 </script>

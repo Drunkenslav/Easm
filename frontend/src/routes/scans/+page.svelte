@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { api } from '$lib/api';
-	import { formatRelativeTime, getStatusClass, formatDuration } from '$lib/utils';
+	import { api } from '$lib/api.ts';
+	import { formatRelativeTime, getStatusClass, formatDuration } from '$lib/utils.ts';
 
 	let scans: any[] = [];
 	let loading = true;

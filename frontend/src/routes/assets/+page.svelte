@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { api } from '$lib/api';
-	import { formatRelativeTime, getSeverityClass } from '$lib/utils';
+	import { api } from '$lib/api.ts';
+	import { formatRelativeTime, getSeverityClass } from '$lib/utils.ts';
 
 	let assets: any[] = [];
 	let loading = true;

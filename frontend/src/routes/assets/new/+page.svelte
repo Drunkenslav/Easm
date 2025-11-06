@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { api } from '$lib/api';
+	import { api } from '$lib/api.ts';
 
 	let form = {
 		type: 'url',
