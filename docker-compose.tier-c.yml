@@ -50,8 +50,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    ports:
-      - "8000:8000"
+    # No port mapping - accessed via nginx only (replicas can't share host port)
     environment:
       - APP_TIER=C
       - APP_NAME=EASM Platform - Enterprise Edition
@@ -145,7 +144,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: easm-frontend-tier-c
+    # No container_name when using replicas (each replica needs unique name)
     environment:
       - ORIGIN=http://localhost
       - NODE_ENV=production
