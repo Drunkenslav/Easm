@@ -25,11 +25,11 @@ EOF
 fi
 
 echo "📦 Building images..."
-docker-compose -f docker-compose.tier-a.yml build
+docker compose -f docker-compose.tier-a.yml build
 
 echo ""
 echo "🚀 Starting services..."
-docker-compose -f docker-compose.tier-a.yml up -d
+docker compose -f docker-compose.tier-a.yml up -d
 
 echo ""
 echo "⏳ Waiting for services to be healthy..."
@@ -37,7 +37,7 @@ sleep 10
 
 echo ""
 echo "📊 Service Status:"
-docker-compose -f docker-compose.tier-a.yml ps
+docker compose -f docker-compose.tier-a.yml ps
 
 echo ""
 echo "✅ Deployment complete!"
@@ -47,7 +47,7 @@ echo "   - Application: http://localhost"
 echo "   - API Docs: http://localhost/docs"
 echo ""
 echo "📝 Useful commands:"
-echo "   - View logs: docker-compose -f docker-compose.tier-a.yml logs -f"
-echo "   - Stop all: docker-compose -f docker-compose.tier-a.yml down"
+echo "   - View logs: docker compose -f docker-compose.tier-a.yml logs -f"
+echo "   - Stop all: docker compose -f docker-compose.tier-a.yml down"
 echo "   - Backup database: docker cp easm-backend-tier-a:/data/easm.db ./backup.db"
 echo ""

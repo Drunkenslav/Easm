@@ -31,11 +31,11 @@ fi
 source .env
 
 echo "📦 Building images..."
-docker-compose -f docker-compose.tier-b.yml build
+docker compose -f docker-compose.tier-b.yml build
 
 echo ""
 echo "🚀 Starting services..."
-docker-compose -f docker-compose.tier-b.yml up -d
+docker compose -f docker-compose.tier-b.yml up -d
 
 echo ""
 echo "⏳ Waiting for services to be healthy..."
@@ -43,7 +43,7 @@ sleep 15
 
 echo ""
 echo "📊 Service Status:"
-docker-compose -f docker-compose.tier-b.yml ps
+docker compose -f docker-compose.tier-b.yml ps
 
 echo ""
 echo "✅ Deployment complete!"
@@ -54,8 +54,8 @@ echo "   - API Docs: http://localhost/docs"
 echo "   - Backend (direct): http://localhost:8000"
 echo ""
 echo "📝 Useful commands:"
-echo "   - View logs: docker-compose -f docker-compose.tier-b.yml logs -f"
-echo "   - View worker logs: docker-compose -f docker-compose.tier-b.yml logs -f celery-worker"
-echo "   - Stop all: docker-compose -f docker-compose.tier-b.yml down"
-echo "   - Backup PostgreSQL: docker-compose -f docker-compose.tier-b.yml exec postgres pg_dump -U easm easm > backup.sql"
+echo "   - View logs: docker compose -f docker-compose.tier-b.yml logs -f"
+echo "   - View worker logs: docker compose -f docker-compose.tier-b.yml logs -f celery-worker"
+echo "   - Stop all: docker compose -f docker-compose.tier-b.yml down"
+echo "   - Backup PostgreSQL: docker compose -f docker-compose.tier-b.yml exec postgres pg_dump -U easm easm > backup.sql"
 echo ""
