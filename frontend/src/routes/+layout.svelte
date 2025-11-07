@@ -29,11 +29,7 @@
 						<div class="hidden md:flex items-center gap-2">
 							<a
 								href="/"
-								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
-								class:text-cyan-400={$page.url.pathname === '/'}
-								class:bg-slate-800/50={$page.url.pathname === '/'}
-								class:shadow-lg={$page.url.pathname === '/'}
-								class:shadow-cyan-500/20={$page.url.pathname === '/'}
+								class="px-4 py-2 rounded-lg transition-all font-medium {$page.url.pathname === '/' ? 'text-cyan-400 bg-slate-800/50 shadow-lg shadow-cyan-500/20' : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50'}"
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,11 +40,7 @@
 							</a>
 							<a
 								href="/assets"
-								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
-								class:text-cyan-400={$page.url.pathname.startsWith('/assets')}
-								class:bg-slate-800/50={$page.url.pathname.startsWith('/assets')}
-								class:shadow-lg={$page.url.pathname.startsWith('/assets')}
-								class:shadow-cyan-500/20={$page.url.pathname.startsWith('/assets')}
+								class="px-4 py-2 rounded-lg transition-all font-medium {$page.url.pathname.startsWith('/assets') ? 'text-cyan-400 bg-slate-800/50 shadow-lg shadow-cyan-500/20' : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50'}"
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,11 +51,7 @@
 							</a>
 							<a
 								href="/scans"
-								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
-								class:text-cyan-400={$page.url.pathname.startsWith('/scans')}
-								class:bg-slate-800/50={$page.url.pathname.startsWith('/scans')}
-								class:shadow-lg={$page.url.pathname.startsWith('/scans')}
-								class:shadow-cyan-500/20={$page.url.pathname.startsWith('/scans')}
+								class="px-4 py-2 rounded-lg transition-all font-medium {$page.url.pathname.startsWith('/scans') ? 'text-cyan-400 bg-slate-800/50 shadow-lg shadow-cyan-500/20' : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50'}"
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,11 +62,7 @@
 							</a>
 							<a
 								href="/vulnerabilities"
-								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
-								class:text-cyan-400={$page.url.pathname.startsWith('/vulnerabilities')}
-								class:bg-slate-800/50={$page.url.pathname.startsWith('/vulnerabilities')}
-								class:shadow-lg={$page.url.pathname.startsWith('/vulnerabilities')}
-								class:shadow-cyan-500/20={$page.url.pathname.startsWith('/vulnerabilities')}
+								class="px-4 py-2 rounded-lg transition-all font-medium {$page.url.pathname.startsWith('/vulnerabilities') ? 'text-cyan-400 bg-slate-800/50 shadow-lg shadow-cyan-500/20' : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50'}"
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
