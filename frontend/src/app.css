@@ -81,19 +81,14 @@
 		@apply bg-gray-100/80 text-gray-700 ring-1 ring-gray-500/20;
 	}
 
-	/* Stat Cards */
+	/* Stat Cards - removed group from @apply */
 	.stat-card {
-		@apply card relative overflow-hidden group;
-	}
-
-	.stat-card::before {
-		content: '';
-		@apply absolute inset-0 bg-gradient-to-br from-blue-600/5 to-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300;
+		@apply card relative overflow-hidden;
 	}
 
 	/* Icon Containers with Gradient */
 	.icon-box {
-		@apply h-14 w-14 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300;
+		@apply h-14 w-14 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform duration-300;
 	}
 
 	.icon-box-primary {
@@ -155,6 +150,20 @@
 	.gradient-text {
 		@apply bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent;
 	}
+}
+
+/* Group hover effects */
+.group:hover .icon-box {
+	@apply scale-110;
+}
+
+.stat-card::before {
+	content: '';
+	@apply absolute inset-0 bg-gradient-to-br from-blue-600/5 to-indigo-600/5 opacity-0 transition-opacity duration-300;
+}
+
+.group:hover .stat-card::before {
+	@apply opacity-100;
 }
 
 /* Custom scrollbar */
