@@ -52,8 +52,8 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="mb-6 flex items-center justify-between">
 		<div>
-			<h1 class="text-3xl font-bold text-gray-900">Assets</h1>
-			<p class="mt-2 text-sm text-gray-600">Manage your attack surface inventory</p>
+			<h1 class="text-3xl font-bold gradient-text">Assets</h1>
+			<p class="mt-2 text-sm text-slate-400">Manage your attack surface inventory</p>
 		</div>
 		<a href="/assets/new" class="btn btn-primary">
 			<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,14 +65,14 @@
 
 	<div class="card">
 		{#if loading}
-			<p class="text-center text-gray-500 py-8">Loading assets...</p>
+			<p class="text-center text-slate-400 py-8">Loading assets...</p>
 		{:else if assets.length === 0}
 			<div class="text-center py-12">
-				<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<svg class="mx-auto h-12 w-12 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
 				</svg>
-				<h3 class="mt-2 text-sm font-medium text-gray-900">No assets</h3>
-				<p class="mt-1 text-sm text-gray-500">Get started by creating a new asset.</p>
+				<h3 class="mt-2 text-sm font-medium text-slate-100">No assets</h3>
+				<p class="mt-1 text-sm text-slate-400">Get started by creating a new asset.</p>
 				<div class="mt-6">
 					<a href="/assets/new" class="btn btn-primary">
 						<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,24 +84,24 @@
 			</div>
 		{:else}
 			<div class="overflow-x-auto">
-				<table class="min-w-full divide-y divide-gray-200">
-					<thead class="bg-gray-50">
+				<table class="min-w-full divide-y divide-slate-700">
+					<thead class="bg-slate-800/50">
 						<tr>
-							<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asset</th>
-							<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-							<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-							<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Seen</th>
-							<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+							<th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Asset</th>
+							<th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Type</th>
+							<th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Status</th>
+							<th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Last Seen</th>
+							<th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Actions</th>
 						</tr>
 					</thead>
-					<tbody class="bg-white divide-y divide-gray-200">
+					<tbody class="divide-y divide-slate-700">
 						{#each assets as asset}
-							<tr class="hover:bg-gray-50">
+							<tr class="hover:bg-slate-800/30 transition-colors">
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div>
-										<div class="text-sm font-medium text-gray-900">{asset.value}</div>
+										<div class="text-sm font-medium text-slate-100">{asset.value}</div>
 										{#if asset.name}
-											<div class="text-sm text-gray-500">{asset.name}</div>
+											<div class="text-sm text-slate-400">{asset.name}</div>
 										{/if}
 									</div>
 								</td>
@@ -113,18 +113,18 @@
 										{asset.status}
 									</span>
 								</td>
-								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
 									{formatRelativeTime(asset.last_seen_at)}
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
 									<div class="flex gap-2">
-										<button on:click={() => goto(`/assets/${asset.id}`)} class="text-primary-600 hover:text-primary-900">
+										<button on:click={() => goto(`/assets/${asset.id}`)} class="text-cyan-400 hover:text-cyan-300 transition-colors">
 											View
 										</button>
-										<button on:click={() => triggerScan(asset.id)} class="text-green-600 hover:text-green-900">
+										<button on:click={() => triggerScan(asset.id)} class="text-green-400 hover:text-green-300 transition-colors">
 											Scan
 										</button>
-										<button on:click={() => deleteAsset(asset.id)} class="text-red-600 hover:text-red-900">
+										<button on:click={() => deleteAsset(asset.id)} class="text-red-400 hover:text-red-300 transition-colors">
 											Delete
 										</button>
 									</div>

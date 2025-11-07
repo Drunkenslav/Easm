@@ -49,8 +49,8 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="mb-6">
-		<h1 class="text-3xl font-bold text-gray-900">Vulnerabilities</h1>
-		<p class="mt-2 text-sm text-gray-600">Manage and triage discovered vulnerabilities</p>
+		<h1 class="text-3xl font-bold gradient-text">Vulnerabilities</h1>
+		<p class="mt-2 text-sm text-slate-400">Manage and triage discovered vulnerabilities</p>
 	</div>
 
 	<!-- Filters -->
@@ -96,14 +96,14 @@
 
 	<div class="card">
 		{#if loading}
-			<p class="text-center text-gray-500 py-8">Loading vulnerabilities...</p>
+			<p class="text-center text-slate-400 py-8">Loading vulnerabilities...</p>
 		{:else if vulnerabilities.length === 0}
 			<div class="text-center py-12">
-				<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<svg class="mx-auto h-12 w-12 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 				</svg>
-				<h3 class="mt-2 text-sm font-medium text-gray-900">No vulnerabilities</h3>
-				<p class="mt-1 text-sm text-gray-500">
+				<h3 class="mt-2 text-sm font-medium text-slate-100">No vulnerabilities</h3>
+				<p class="mt-1 text-sm text-slate-400">
 					{#if filter.state || filter.severity || filter.asset_id}
 						No vulnerabilities match your filters.
 					{:else}
@@ -119,7 +119,7 @@
 		{:else}
 			<div class="space-y-4">
 				{#each vulnerabilities as vuln}
-					<div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+					<div class="border border-slate-700/50 rounded-lg p-4 hover:bg-slate-800/30 transition-all bg-slate-800/20">
 						<div class="flex items-start justify-between mb-3">
 							<div class="flex-1">
 								<div class="flex items-center gap-2 mb-2">
@@ -133,21 +133,21 @@
 										<span class="badge badge-gray text-xs">{vuln.cve_ids[0]}</span>
 									{/if}
 								</div>
-								<h3 class="font-semibold text-gray-900 text-lg">{vuln.name}</h3>
-								<p class="text-sm text-gray-600 mt-1">{vuln.matched_at}</p>
+								<h3 class="font-semibold text-slate-100 text-lg">{vuln.name}</h3>
+								<p class="text-sm text-slate-400 mt-1">{vuln.matched_at}</p>
 							</div>
 						</div>
 
 						{#if vuln.description}
-							<p class="text-sm text-gray-700 mb-3">{vuln.description}</p>
+							<p class="text-sm text-slate-300 mb-3">{vuln.description}</p>
 						{/if}
 
-						<div class="flex items-center justify-between pt-3 border-t border-gray-100">
-							<div class="flex items-center gap-4 text-xs text-gray-500">
+						<div class="flex items-center justify-between pt-3 border-t border-slate-700/50">
+							<div class="flex items-center gap-4 text-xs text-slate-400">
 								<span>Template: {vuln.template_id}</span>
 								<span>Found: {formatRelativeTime(vuln.created_at)}</span>
 								{#if vuln.occurrences > 1}
-									<span class="text-orange-600 font-medium">Seen {vuln.occurrences}x</span>
+									<span class="text-orange-400 font-medium">Seen {vuln.occurrences}x</span>
 								{/if}
 							</div>
 
