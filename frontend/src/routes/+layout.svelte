@@ -8,16 +8,16 @@
 	$: isLoginPage = $page.url.pathname === '/login';
 </script>
 
-<div class="min-h-screen">
+<div class="dark min-h-screen bg-gradient-to-br from-black to-slate-900">
 	{#if !isLoginPage && $authStore.isAuthenticated}
-		<!-- Modern Navigation -->
-		<nav class="bg-white/80 backdrop-blur-lg shadow-lg border-b border-white/20 sticky top-0 z-50">
+		<!-- Dark Cyberpunk Navigation -->
+		<nav class="bg-slate-900/80 backdrop-blur-lg shadow-2xl border-b border-cyan-500/20 sticky top-0 z-50">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex justify-between h-16">
 					<div class="flex items-center gap-8">
 						<!-- Logo -->
 						<div class="flex-shrink-0 flex items-center gap-3">
-							<div class="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+							<div class="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/50 ring-2 ring-cyan-500/30">
 								<svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
 								</svg>
@@ -29,9 +29,11 @@
 						<div class="hidden md:flex items-center gap-2">
 							<a
 								href="/"
-								class="nav-link px-4 py-2 rounded-lg transition-all"
-								class:nav-link-active={$page.url.pathname === '/'}
-								class:bg-blue-50={$page.url.pathname === '/'}
+								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
+								class:text-cyan-400={$page.url.pathname === '/'}
+								class:bg-slate-800/50={$page.url.pathname === '/'}
+								class:shadow-lg={$page.url.pathname === '/'}
+								class:shadow-cyan-500/20={$page.url.pathname === '/'}
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,9 +44,11 @@
 							</a>
 							<a
 								href="/assets"
-								class="nav-link px-4 py-2 rounded-lg transition-all"
-								class:nav-link-active={$page.url.pathname.startsWith('/assets')}
-								class:bg-blue-50={$page.url.pathname.startsWith('/assets')}
+								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
+								class:text-cyan-400={$page.url.pathname.startsWith('/assets')}
+								class:bg-slate-800/50={$page.url.pathname.startsWith('/assets')}
+								class:shadow-lg={$page.url.pathname.startsWith('/assets')}
+								class:shadow-cyan-500/20={$page.url.pathname.startsWith('/assets')}
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,9 +59,11 @@
 							</a>
 							<a
 								href="/scans"
-								class="nav-link px-4 py-2 rounded-lg transition-all"
-								class:nav-link-active={$page.url.pathname.startsWith('/scans')}
-								class:bg-blue-50={$page.url.pathname.startsWith('/scans')}
+								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
+								class:text-cyan-400={$page.url.pathname.startsWith('/scans')}
+								class:bg-slate-800/50={$page.url.pathname.startsWith('/scans')}
+								class:shadow-lg={$page.url.pathname.startsWith('/scans')}
+								class:shadow-cyan-500/20={$page.url.pathname.startsWith('/scans')}
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,9 +74,11 @@
 							</a>
 							<a
 								href="/vulnerabilities"
-								class="nav-link px-4 py-2 rounded-lg transition-all"
-								class:nav-link-active={$page.url.pathname.startsWith('/vulnerabilities')}
-								class:bg-blue-50={$page.url.pathname.startsWith('/vulnerabilities')}
+								class="px-4 py-2 rounded-lg transition-all text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50 font-medium"
+								class:text-cyan-400={$page.url.pathname.startsWith('/vulnerabilities')}
+								class:bg-slate-800/50={$page.url.pathname.startsWith('/vulnerabilities')}
+								class:shadow-lg={$page.url.pathname.startsWith('/vulnerabilities')}
+								class:shadow-cyan-500/20={$page.url.pathname.startsWith('/vulnerabilities')}
 							>
 								<div class="flex items-center gap-2">
 									<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,13 +93,13 @@
 					<!-- User Menu -->
 					<div class="flex items-center gap-4">
 						{#if $authStore.user}
-							<div class="hidden sm:flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200/50">
-								<div class="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+							<div class="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50">
+								<div class="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-cyan-500/30">
 									{$authStore.user.username.charAt(0).toUpperCase()}
 								</div>
 								<div class="text-left">
-									<p class="text-sm font-semibold text-gray-900">{$authStore.user.username}</p>
-									<p class="text-xs text-gray-500 capitalize">{$authStore.user.role}</p>
+									<p class="text-sm font-semibold text-slate-100">{$authStore.user.username}</p>
+									<p class="text-xs text-slate-400 capitalize">{$authStore.user.role}</p>
 								</div>
 							</div>
 							<button
