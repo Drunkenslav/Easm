@@ -208,6 +208,7 @@
 							<div class="text-xs text-slate-500 mt-1">Monitored endpoints</div>
 							<div class="absolute -bottom-6 -right-6 h-16 w-16 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 opacity-20 blur-xl"></div>
 						</div>
+			</div>
 
 						<!-- Open Vulnerabilities -->
 						<div class="card group relative overflow-hidden">
@@ -229,6 +230,7 @@
 							<div class="text-xs text-slate-500 mt-1">Require attention</div>
 							<div class="absolute -bottom-6 -right-6 h-16 w-16 rounded-full bg-gradient-to-r from-red-500 to-rose-500 opacity-20 blur-xl"></div>
 						</div>
+			</div>
 
 						<!-- CPU Usage -->
 						<div class="card group relative overflow-hidden">
@@ -246,6 +248,7 @@
 							<div class="text-xs text-slate-500 mt-1">System load</div>
 							<div class="absolute -bottom-6 -right-6 h-16 w-16 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 opacity-20 blur-xl"></div>
 						</div>
+			</div>
 
 						<!-- Security Level -->
 						<div class="card group relative overflow-hidden">
@@ -263,6 +266,7 @@
 							<div class="text-xs text-slate-500 mt-1">Protected</div>
 							<div class="absolute -bottom-6 -right-6 h-16 w-16 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 opacity-20 blur-xl"></div>
 						</div>
+			</div>
 					</div>
 
 					<!-- Recent Scans -->
