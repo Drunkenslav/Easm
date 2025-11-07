@@ -159,44 +159,40 @@
 	<title>Dashboard - EASM Platform</title>
 </svelte:head>
 
-<div class="dark min-h-screen bg-gradient-to-br from-black to-slate-900 text-slate-100 relative overflow-hidden">
-	<!-- Background particle effect -->
-	<canvas bind:this={canvas} class="absolute inset-0 w-full h-full opacity-30" />
-
-	<!-- Loading overlay -->
-	{#if isLoading}
-		<div class="absolute inset-0 bg-black/80 flex items-center justify-center z-50">
-			<div class="flex flex-col items-center">
-				<div class="relative w-24 h-24">
-					<div class="absolute inset-0 border-4 border-cyan-500/30 rounded-full animate-ping"></div>
-					<div class="absolute inset-2 border-4 border-t-cyan-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-					<div class="absolute inset-4 border-4 border-r-purple-500 border-t-transparent border-b-transparent border-l-transparent rounded-full animate-spin-slow"></div>
-					<div class="absolute inset-6 border-4 border-b-blue-500 border-t-transparent border-r-transparent border-l-transparent rounded-full animate-spin-slower"></div>
-					<div class="absolute inset-8 border-4 border-l-green-500 border-t-transparent border-r-transparent border-b-transparent rounded-full animate-spin"></div>
+<div class="min-h-screen bg-gradient-to-br from-black to-slate-900">
+	<!-- Top Header Bar -->
+	<div class="bg-slate-900/50 backdrop-blur-lg border-b border-slate-800/50 sticky top-0 z-40">
+		<div class="px-8 py-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<h1 class="text-2xl font-bold gradient-text">Dashboard</h1>
+					<p class="text-sm text-slate-400 mt-1">Attack surface monitoring and threat intelligence</p>
 				</div>
-				<div class="mt-4 text-cyan-500 font-mono text-sm tracking-wider">SYSTEM INITIALIZING</div>
+				<div class="flex items-center gap-4">
+					<div class="text-right">
+						<div class="text-xs text-slate-400">Last Updated</div>
+						<div class="text-sm font-mono text-slate-300">{formatTime(currentTime)}</div>
+					</div>
+					<button class="btn btn-primary btn-sm">
+						<svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+						</svg>
+						Refresh
+					</button>
+				</div>
 			</div>
 		</div>
-	{/if}
+	</div>
 
-	<div class="container mx-auto p-4 relative z-10">
-		<div class="grid grid-cols-12 gap-6">
-			<!-- Main dashboard -->
-			<div class="col-span-12 lg:col-span-9">
-				<div class="grid gap-6">
-					<!-- Header -->
-					<div class="mb-4">
-						<h1 class="text-4xl font-bold gradient-text mb-2">Attack Surface Command Center</h1>
-						<p class="text-lg text-slate-400">Real-time security monitoring and threat intelligence</p>
-					</div>
-
-					<!-- System overview stats -->
-					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-						<!-- Total Assets -->
-						<div class="card group relative overflow-hidden">
-							<div class="flex items-center justify-between mb-2">
-								<div class="text-sm text-slate-400">Total Assets</div>
-								<div class="icon-box icon-box-primary h-12 w-12">
+	<!-- Main Content -->
+	<div class="p-8">
+		<!-- Quick Stats Row -->
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+			<!-- Total Assets -->
+			<div class="card group relative overflow-hidden">
+				<div class="flex items-center justify-between mb-2">
+					<div class="text-sm text-slate-400">Total Assets</div>
+					<div class="icon-box icon-box-primary h-12 w-12">
 									<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
 									</svg>
