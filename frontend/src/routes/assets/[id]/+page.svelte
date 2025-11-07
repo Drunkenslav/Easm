@@ -66,10 +66,10 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="mb-6 flex items-center justify-between">
 		<div>
-			<button on:click={() => goto('/assets')} class="text-sm text-gray-500 hover:text-gray-700 mb-2">
+			<button on:click={() => goto('/assets')} class="text-sm text-slate-400 hover:text-slate-300 mb-2">
 				← Back to Assets
 			</button>
-			<h1 class="text-3xl font-bold text-gray-900">Asset Details</h1>
+			<h1 class="text-3xl font-bold gradient-text">Asset Details</h1>
 		</div>
 		<button on:click={triggerScan} class="btn btn-primary">
 			<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,7 +81,7 @@
 
 	{#if loading}
 		<div class="card">
-			<p class="text-center text-gray-500 py-8">Loading asset details...</p>
+			<p class="text-center text-slate-400 py-8">Loading asset details...</p>
 		</div>
 	{:else if !asset}
 		<div class="card">
@@ -92,33 +92,33 @@
 			<!-- Main Info -->
 			<div class="lg:col-span-2 space-y-6">
 				<div class="card">
-					<h2 class="text-2xl font-bold text-gray-900 mb-4">{asset.value}</h2>
+					<h2 class="text-2xl font-bold text-slate-100 mb-4">{asset.value}</h2>
 					{#if asset.name}
-						<p class="text-gray-600 mb-4">{asset.name}</p>
+						<p class="text-slate-400 mb-4">{asset.name}</p>
 					{/if}
 
 					<div class="grid grid-cols-2 gap-4">
 						<div>
-							<span class="text-sm text-gray-500">Type</span>
+							<span class="text-sm text-slate-400">Type</span>
 							<p class="font-medium">{asset.type}</p>
 						</div>
 						<div>
-							<span class="text-sm text-gray-500">Status</span>
+							<span class="text-sm text-slate-400">Status</span>
 							<p><span class="badge {asset.status === 'active' ? 'badge-success' : 'badge-gray'}">{asset.status}</span></p>
 						</div>
 						<div>
-							<span class="text-sm text-gray-500">Criticality</span>
+							<span class="text-sm text-slate-400">Criticality</span>
 							<p class="font-medium capitalize">{asset.criticality}</p>
 						</div>
 						<div>
-							<span class="text-sm text-gray-500">Last Scanned</span>
+							<span class="text-sm text-slate-400">Last Scanned</span>
 							<p class="text-sm">{formatRelativeTime(asset.last_scanned_at)}</p>
 						</div>
 					</div>
 
 					{#if asset.tags && asset.tags.length > 0}
 						<div class="mt-4 pt-4 border-t">
-							<span class="text-sm text-gray-500 block mb-2">Tags</span>
+							<span class="text-sm text-slate-400 block mb-2">Tags</span>
 							<div class="flex flex-wrap gap-2">
 								{#each asset.tags as tag}
 									<span class="badge badge-info">{tag}</span>
@@ -129,8 +129,8 @@
 
 					{#if asset.notes}
 						<div class="mt-4 pt-4 border-t">
-							<span class="text-sm text-gray-500 block mb-2">Notes</span>
-							<p class="text-sm text-gray-700">{asset.notes}</p>
+							<span class="text-sm text-slate-400 block mb-2">Notes</span>
+							<p class="text-sm text-slate-300">{asset.notes}</p>
 						</div>
 					{/if}
 				</div>
@@ -138,22 +138,22 @@
 				<!-- Vulnerabilities -->
 				<div class="card">
 					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold text-gray-900">Recent Vulnerabilities</h3>
-						<a href="/vulnerabilities?asset_id={assetId}" class="text-sm text-primary-600 hover:text-primary-700">
+						<h3 class="text-lg font-semibold text-slate-100">Recent Vulnerabilities</h3>
+						<a href="/vulnerabilities?asset_id={assetId}" class="text-sm text-cyan-400 hover:text-cyan-300">
 							View all →
 						</a>
 					</div>
 
 					{#if vulnerabilities.length === 0}
-						<p class="text-gray-500 text-center py-4">No vulnerabilities found</p>
+						<p class="text-slate-400 text-center py-4">No vulnerabilities found</p>
 					{:else}
 						<div class="space-y-3">
 							{#each vulnerabilities as vuln}
-								<div class="border border-gray-200 rounded-lg p-3">
+								<div class="border border-slate-700/50 rounded-lg p-3">
 									<div class="flex items-start justify-between">
 										<div class="flex-1">
-											<h4 class="font-medium text-gray-900 text-sm">{vuln.name}</h4>
-											<p class="text-xs text-gray-500 mt-1">{formatRelativeTime(vuln.created_at)}</p>
+											<h4 class="font-medium text-slate-100 text-sm">{vuln.name}</h4>
+											<p class="text-xs text-slate-400 mt-1">{formatRelativeTime(vuln.created_at)}</p>
 										</div>
 										<span class="badge {getSeverityClass(vuln.severity)} ml-2">
 											{vuln.severity}
@@ -161,7 +161,7 @@
 									</div>
 									<button
 										on:click={() => goto(`/vulnerabilities/${vuln.id}`)}
-										class="text-xs text-primary-600 hover:text-primary-900 mt-2"
+										class="text-xs text-cyan-400 hover:text-cyan-300 mt-2"
 									>
 										View Details →
 									</button>
@@ -174,21 +174,21 @@
 				<!-- Scans -->
 				<div class="card">
 					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold text-gray-900">Recent Scans</h3>
-						<a href="/scans?asset_id={assetId}" class="text-sm text-primary-600 hover:text-primary-700">
+						<h3 class="text-lg font-semibold text-slate-100">Recent Scans</h3>
+						<a href="/scans?asset_id={assetId}" class="text-sm text-cyan-400 hover:text-cyan-300">
 							View all →
 						</a>
 					</div>
 
 					{#if scans.length === 0}
-						<p class="text-gray-500 text-center py-4">No scans yet</p>
+						<p class="text-slate-400 text-center py-4">No scans yet</p>
 					{:else}
 						<div class="space-y-3">
 							{#each scans as scan}
-								<div class="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0">
+								<div class="flex items-center justify-between border-b border-slate-700/50 pb-3 last:border-0">
 									<div>
-										<p class="text-sm font-medium text-gray-900">#{scan.id}</p>
-										<p class="text-xs text-gray-500">{formatRelativeTime(scan.created_at)}</p>
+										<p class="text-sm font-medium text-slate-100">#{scan.id}</p>
+										<p class="text-xs text-slate-400">{formatRelativeTime(scan.created_at)}</p>
 									</div>
 									<div class="flex items-center gap-2">
 										<span class="badge {scan.status === 'completed' ? 'badge-success' : scan.status === 'running' ? 'badge-info' : 'badge-gray'}">
@@ -196,7 +196,7 @@
 										</span>
 										<button
 											on:click={() => goto(`/scans/${scan.id}`)}
-											class="text-xs text-primary-600 hover:text-primary-900"
+											class="text-xs text-cyan-400 hover:text-cyan-300"
 										>
 											View
 										</button>
@@ -212,17 +212,17 @@
 			<div class="space-y-6">
 				<!-- Stats -->
 				<div class="card">
-					<h3 class="text-lg font-semibold text-gray-900 mb-4">Vulnerability Stats</h3>
+					<h3 class="text-lg font-semibold text-slate-100 mb-4">Vulnerability Stats</h3>
 					<div class="space-y-3">
 						<div class="flex justify-between items-center">
-							<span class="text-sm text-gray-600">Total</span>
-							<span class="text-2xl font-bold text-gray-900">{asset.vulnerability_count}</span>
+							<span class="text-sm text-slate-400">Total</span>
+							<span class="text-2xl font-bold text-slate-100">{asset.vulnerability_count}</span>
 						</div>
 						{#if asset.vulnerability_count_by_severity}
 							{#each Object.entries(asset.vulnerability_count_by_severity) as [severity, count]}
 								<div class="flex justify-between items-center">
 									<span class="badge {getSeverityClass(severity)}">{severity}</span>
-									<span class="font-semibold text-gray-900">{count}</span>
+									<span class="font-semibold text-slate-100">{count}</span>
 								</div>
 							{/each}
 						{/if}
@@ -231,20 +231,20 @@
 
 				<!-- Metadata -->
 				<div class="card">
-					<h3 class="text-lg font-semibold text-gray-900 mb-4">Metadata</h3>
+					<h3 class="text-lg font-semibold text-slate-100 mb-4">Metadata</h3>
 					<dl class="space-y-3">
 						<div>
-							<dt class="text-xs font-medium text-gray-500">Discovered</dt>
-							<dd class="mt-1 text-sm text-gray-900">{formatDate(asset.discovered_at)}</dd>
+							<dt class="text-xs font-medium text-slate-400">Discovered</dt>
+							<dd class="mt-1 text-sm text-slate-100">{formatDate(asset.discovered_at)}</dd>
 						</div>
 						<div>
-							<dt class="text-xs font-medium text-gray-500">Last Seen</dt>
-							<dd class="mt-1 text-sm text-gray-900">{formatDate(asset.last_seen_at)}</dd>
+							<dt class="text-xs font-medium text-slate-400">Last Seen</dt>
+							<dd class="mt-1 text-sm text-slate-100">{formatDate(asset.last_seen_at)}</dd>
 						</div>
 						{#if asset.discovery_method}
 							<div>
-								<dt class="text-xs font-medium text-gray-500">Discovery Method</dt>
-								<dd class="mt-1 text-sm text-gray-900">{asset.discovery_method}</dd>
+								<dt class="text-xs font-medium text-slate-400">Discovery Method</dt>
+								<dd class="mt-1 text-sm text-slate-100">{asset.discovery_method}</dd>
 							</div>
 						{/if}
 					</dl>

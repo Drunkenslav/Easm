@@ -79,15 +79,15 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="mb-6">
-		<button on:click={() => goto('/vulnerabilities')} class="text-sm text-gray-500 hover:text-gray-700 mb-2">
+		<button on:click={() => goto('/vulnerabilities')} class="text-sm text-slate-400 hover:text-slate-300 mb-2">
 			← Back to Vulnerabilities
 		</button>
-		<h1 class="text-3xl font-bold text-gray-900">Vulnerability #{vulnId}</h1>
+		<h1 class="text-3xl font-bold gradient-text">Vulnerability #{vulnId}</h1>
 	</div>
 
 	{#if loading}
 		<div class="card">
-			<p class="text-center text-gray-500 py-8">Loading vulnerability details...</p>
+			<p class="text-center text-slate-400 py-8">Loading vulnerability details...</p>
 		</div>
 	{:else if !vuln}
 		<div class="card">
@@ -132,28 +132,28 @@
 			<div class="lg:col-span-2 space-y-6">
 				<!-- Title and Description -->
 				<div class="card">
-					<h2 class="text-2xl font-bold text-gray-900 mb-4">{vuln.name}</h2>
+					<h2 class="text-2xl font-bold text-slate-100 mb-4">{vuln.name}</h2>
 					{#if vuln.description}
-						<p class="text-gray-700 whitespace-pre-wrap">{vuln.description}</p>
+						<p class="text-slate-300 whitespace-pre-wrap">{vuln.description}</p>
 					{/if}
 				</div>
 
 				<!-- Location -->
 				<div class="card">
-					<h3 class="text-lg font-semibold text-gray-900 mb-3">Location</h3>
-					<div class="bg-gray-50 p-3 rounded-lg">
-						<p class="font-mono text-sm text-gray-800 break-all">{vuln.matched_at}</p>
+					<h3 class="text-lg font-semibold text-slate-100 mb-3">Location</h3>
+					<div class="bg-slate-800/50 p-3 rounded-lg">
+						<p class="font-mono text-sm text-slate-100 break-all">{vuln.matched_at}</p>
 					</div>
 				</div>
 
 				<!-- CVE/CWE -->
 				{#if (vuln.cve_ids && vuln.cve_ids.length > 0) || (vuln.cwe_ids && vuln.cwe_ids.length > 0)}
 					<div class="card">
-						<h3 class="text-lg font-semibold text-gray-900 mb-3">Identifiers</h3>
+						<h3 class="text-lg font-semibold text-slate-100 mb-3">Identifiers</h3>
 						<div class="space-y-2">
 							{#if vuln.cve_ids && vuln.cve_ids.length > 0}
 								<div>
-									<span class="text-sm font-medium text-gray-600">CVE:</span>
+									<span class="text-sm font-medium text-slate-400">CVE:</span>
 									<div class="flex flex-wrap gap-2 mt-1">
 										{#each vuln.cve_ids as cve}
 											<a
@@ -170,7 +170,7 @@
 							{/if}
 							{#if vuln.cwe_ids && vuln.cwe_ids.length > 0}
 								<div>
-									<span class="text-sm font-medium text-gray-600">CWE:</span>
+									<span class="text-sm font-medium text-slate-400">CWE:</span>
 									<div class="flex flex-wrap gap-2 mt-1">
 										{#each vuln.cwe_ids as cwe}
 											<span class="badge badge-gray">{cwe}</span>
@@ -180,7 +180,7 @@
 							{/if}
 							{#if vuln.cvss_score}
 								<div>
-									<span class="text-sm font-medium text-gray-600">CVSS Score:</span>
+									<span class="text-sm font-medium text-slate-400">CVSS Score:</span>
 									<span class="ml-2 font-semibold">{vuln.cvss_score}</span>
 								</div>
 							{/if}
@@ -191,11 +191,11 @@
 				<!-- References -->
 				{#if vuln.reference_urls && vuln.reference_urls.length > 0}
 					<div class="card">
-						<h3 class="text-lg font-semibold text-gray-900 mb-3">References</h3>
+						<h3 class="text-lg font-semibold text-slate-100 mb-3">References</h3>
 						<ul class="space-y-2">
 							{#each vuln.reference_urls as url}
 								<li>
-									<a href={url} target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-900 text-sm break-all">
+									<a href={url} target="_blank" rel="noopener" class="text-cyan-400 hover:text-cyan-300 text-sm break-all">
 										{url} ↗
 									</a>
 								</li>
@@ -207,25 +207,25 @@
 				<!-- Request/Response -->
 				{#if vuln.request || vuln.response}
 					<div class="card">
-						<h3 class="text-lg font-semibold text-gray-900 mb-3">HTTP Details</h3>
+						<h3 class="text-lg font-semibold text-slate-100 mb-3">HTTP Details</h3>
 
 						{#if vuln.request}
 							<div class="mb-4">
-								<h4 class="text-sm font-medium text-gray-700 mb-2">Request:</h4>
-								<pre class="bg-gray-50 p-3 rounded-lg overflow-x-auto text-xs text-gray-800">{vuln.request}</pre>
+								<h4 class="text-sm font-medium text-slate-300 mb-2">Request:</h4>
+								<pre class="bg-slate-800/50 p-3 rounded-lg overflow-x-auto text-xs text-slate-100">{vuln.request}</pre>
 							</div>
 						{/if}
 
 						{#if vuln.response}
 							<div>
-								<h4 class="text-sm font-medium text-gray-700 mb-2">Response:</h4>
-								<pre class="bg-gray-50 p-3 rounded-lg overflow-x-auto text-xs text-gray-800">{vuln.response}</pre>
+								<h4 class="text-sm font-medium text-slate-300 mb-2">Response:</h4>
+								<pre class="bg-slate-800/50 p-3 rounded-lg overflow-x-auto text-xs text-slate-100">{vuln.response}</pre>
 							</div>
 						{/if}
 
 						{#if vuln.curl_command}
 							<div class="mt-4">
-								<h4 class="text-sm font-medium text-gray-700 mb-2">cURL Command:</h4>
+								<h4 class="text-sm font-medium text-slate-300 mb-2">cURL Command:</h4>
 								<pre class="bg-gray-900 text-green-400 p-3 rounded-lg overflow-x-auto text-xs">{vuln.curl_command}</pre>
 							</div>
 						{/if}
@@ -237,24 +237,24 @@
 			<div class="space-y-6">
 				<!-- Metadata -->
 				<div class="card">
-					<h3 class="text-lg font-semibold text-gray-900 mb-4">Metadata</h3>
+					<h3 class="text-lg font-semibold text-slate-100 mb-4">Metadata</h3>
 					<dl class="space-y-3">
 						<div>
-							<dt class="text-xs font-medium text-gray-500">Template ID</dt>
-							<dd class="mt-1 text-sm text-gray-900 font-mono">{vuln.template_id}</dd>
+							<dt class="text-xs font-medium text-slate-400">Template ID</dt>
+							<dd class="mt-1 text-sm text-slate-100 font-mono">{vuln.template_id}</dd>
 						</div>
 						<div>
-							<dt class="text-xs font-medium text-gray-500">First Seen</dt>
-							<dd class="mt-1 text-sm text-gray-900">{formatDate(vuln.first_seen_at)}</dd>
+							<dt class="text-xs font-medium text-slate-400">First Seen</dt>
+							<dd class="mt-1 text-sm text-slate-100">{formatDate(vuln.first_seen_at)}</dd>
 						</div>
 						<div>
-							<dt class="text-xs font-medium text-gray-500">Last Seen</dt>
-							<dd class="mt-1 text-sm text-gray-900">{formatDate(vuln.last_seen_at)}</dd>
+							<dt class="text-xs font-medium text-slate-400">Last Seen</dt>
+							<dd class="mt-1 text-sm text-slate-100">{formatDate(vuln.last_seen_at)}</dd>
 						</div>
 						{#if vuln.state_changed_at}
 							<div>
-								<dt class="text-xs font-medium text-gray-500">State Changed</dt>
-								<dd class="mt-1 text-sm text-gray-900">{formatDate(vuln.state_changed_at)}</dd>
+								<dt class="text-xs font-medium text-slate-400">State Changed</dt>
+								<dd class="mt-1 text-sm text-slate-100">{formatDate(vuln.state_changed_at)}</dd>
 							</div>
 						{/if}
 					</dl>
@@ -263,7 +263,7 @@
 				<!-- Tags -->
 				{#if vuln.tags && vuln.tags.length > 0}
 					<div class="card">
-						<h3 class="text-lg font-semibold text-gray-900 mb-3">Tags</h3>
+						<h3 class="text-lg font-semibold text-slate-100 mb-3">Tags</h3>
 						<div class="flex flex-wrap gap-2">
 							{#each vuln.tags as tag}
 								<span class="badge badge-info">{tag}</span>
@@ -275,8 +275,8 @@
 				<!-- Resolution Notes -->
 				{#if vuln.resolution_notes}
 					<div class="card">
-						<h3 class="text-lg font-semibold text-gray-900 mb-3">Resolution Notes</h3>
-						<p class="text-sm text-gray-700 whitespace-pre-wrap">{vuln.resolution_notes}</p>
+						<h3 class="text-lg font-semibold text-slate-100 mb-3">Resolution Notes</h3>
+						<p class="text-sm text-slate-300 whitespace-pre-wrap">{vuln.resolution_notes}</p>
 					</div>
 				{/if}
 
@@ -293,7 +293,7 @@
 
 				<!-- Actions -->
 				<div class="card">
-					<h3 class="text-lg font-semibold text-gray-900 mb-3">Actions</h3>
+					<h3 class="text-lg font-semibold text-slate-100 mb-3">Actions</h3>
 					<div class="space-y-2">
 						<button on:click={() => goto(`/assets/${vuln.asset_id}`)} class="btn btn-secondary w-full">
 							View Asset

@@ -40,13 +40,13 @@
 
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 	<div class="mb-6">
-		<h1 class="text-3xl font-bold text-gray-900">Add New Asset</h1>
-		<p class="mt-2 text-sm text-gray-600">Register a new asset for vulnerability scanning</p>
+		<h1 class="text-3xl font-bold gradient-text">Add New Asset</h1>
+		<p class="mt-2 text-sm text-slate-400">Register a new asset for vulnerability scanning</p>
 	</div>
 
 	<div class="card">
 		{#if error}
-			<div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+			<div class="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-sm text-red-400">
 				{error}
 			</div>
 		{/if}
@@ -73,7 +73,7 @@
 					class="input"
 					required
 				/>
-				<p class="mt-1 text-sm text-gray-500">The URL, domain, IP, or endpoint to scan</p>
+				<p class="mt-1 text-sm text-slate-400">The URL, domain, IP, or endpoint to scan</p>
 			</div>
 
 			<div>
@@ -106,7 +106,7 @@
 					placeholder="production, web-app, critical"
 					class="input"
 				/>
-				<p class="mt-1 text-sm text-gray-500">Comma-separated tags</p>
+				<p class="mt-1 text-sm text-slate-400">Comma-separated tags</p>
 			</div>
 
 			<div>
